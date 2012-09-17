@@ -81,4 +81,4 @@ D'autres widgets sont disponibles dans le repertoire ~/.config/awesome/vicious/
 - - -
 
 Pour tout bugs, remarques, etc. Vous pouvez me contacter a
-mailto:dev@aufrinfo.net
+<dev@aufrinfo.net>
