@@ -1,3 +1,9 @@
+-----------------------------------------
+--       color.lua for awesome         --
+--    by Aurelien Frances (Stratos)    --
+--         dev@aufrinfo.net            --
+-----------------------------------------
+
 -- Color Night
 
 blk = "#262626"
@@ -19,6 +25,7 @@ brwhi = "#ffffff"
 trblk = "#0d0d0d"
 trwhi = "#ffffff"
 
+-- pour les widgets
 coldef  = "</span>"
 colblk  = "<span color='" .. blk .. "'>"
 colred  = "<span color='" .. red .. "'>"

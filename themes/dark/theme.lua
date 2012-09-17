@@ -1,14 +1,17 @@
--------------------------------
---  "Stratos Dark" awesome theme  --
---    By Stratos (epitech)  --
--------------------------------
+-----------------------------------------
+--       theme.lua for awesome         --
+--    by Aurelien Frances (Stratos)    --
+--         dev@aufrinfo.net            --
+-----------------------------------------
 
 require("color")
 
 -- {{{ Main
 theme = {}
---theme.wallpaper_cmd = { "awsetbg /home/" .. USER .. "/.config/awesome/themes/wallpaper/space_wallpaper_1280x1024.jpg" }
-theme.wallpaper_cmd = { "nitrogen --set-scaled /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
+
+-- decommentez la seconde ligne pour utiliser nitrogen comme background setter (necessite l'installation de nitrogen)
+theme.wallpaper_cmd = { "awsetbg /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
+--theme.wallpaper_cmd = { "nitrogen --set-scaled /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
 
 theme.font = "terminus 8.5"
 

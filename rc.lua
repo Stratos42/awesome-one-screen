@@ -1,3 +1,9 @@
+-----------------------------------------
+--    rc.lua for awesome-one-screen    --
+--    by Aurelien Frances (Stratos)    --
+--         dev@aufrinfo.net            --
+-----------------------------------------
+
 -- Standard awesome library
 require("awful")
 require("awful.autofocus")
@@ -14,7 +20,8 @@ require("vicious")
 require("calendar2")
 
 -- {{{ Variable definitions
-USER            =       "france_a"
+-- Modify this line before restart awesome
+USER            =       "login"
 
 -- Themes define colours, icons, and wallpapers
 beautiful.init("/home/" .. USER .. "/.config/awesome/themes/dark/theme.lua")
