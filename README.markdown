@@ -5,7 +5,7 @@ Awesome configuration
 
 Ce repos contient tous les elements necessaire pour awesome (un seul ecran).
 
-Version 4.2 Dark style par Aurélien Frances (Stratos - aufrinfo.net)
+Version Dark style par Aurélien Frances (Stratos)
 
 - - -
 
@@ -30,18 +30,7 @@ Une fois cree, vous avez le choix entre :
 
     - renommer le depot deja clone en ~/.config/awesome
 
-Une fois installe, vous devez modifier le fichier rc.lua present dans le
-dossier awesome.
-
-Modifiez la ligne 24 :
-
-	 USER            =       "login"
-
-en remplacant 'login' par votre nom d'utilisateur (le meme que votre
-repertoire home)
-
-
-Relancez awesome (par defaut 'Ctrl-Shift R')
+Lancez ou relancez awesome (par defaut 'Ctrl-Shift R')
 
 Configuration
 -------------
@@ -81,4 +70,4 @@ D'autres widgets sont disponibles dans le repertoire ~/.config/awesome/vicious/
 - - -
 
 Pour tout bugs, remarques, etc. Vous pouvez me contacter a
-dev@aufrinfo.net
+stratos@aufrinfo.net

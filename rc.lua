@@ -21,7 +21,7 @@ require("calendar2")
 
 -- {{{ Variable definitions
 -- Modify this line before restart awesome
-USER            =       "login"
+USER            =       os.getenv("USER")
 
 -- Themes define colours, icons, and wallpapers
 beautiful.init("/home/" .. USER .. "/.config/awesome/themes/dark/theme.lua")
