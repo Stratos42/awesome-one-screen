@@ -10,8 +10,9 @@ require("color")
 theme = {}
 
 -- decommentez la seconde ligne pour utiliser nitrogen comme background setter (necessite l'installation de nitrogen)
-theme.wallpaper_cmd = { "awsetbg /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
---theme.wallpaper_cmd = { "nitrogen --set-scaled /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
+-- theme.wallpaper_cmd = { "awsetbg /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
+-- theme.wallpaper_cmd = { "nitrogen --set-scaled /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
+theme.wallpaper_cmd = { "feh --bg-scale /home/" .. USER .. "/.config/awesome/themes/wallpaper/Chimera1600x1200.jpg" }
 
 theme.font = "terminus 8.5"
 

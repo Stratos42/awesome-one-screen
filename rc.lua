@@ -12,12 +12,48 @@ require("awful.remote")
 
 -- Theme handling library
 require("beautiful")
+
 -- Notification library
 require("naughty")
 
 -- Load vicious
 require("vicious")
-require("calendar2")
+
+-- {{{ Error handling
+-- Check if awesome encountered an error during startup and fell back to
+-- another config (This code will only ever execute for the fallback config)
+if awesome.startup_errors then
+    naughty.notify({ preset = naughty.config.presets.critical,
+                     title = "Oops, there were errors during startup!",
+                     text = awesome.startup_errors })
+ end
+
+-- Handle runtime errors after startup
+do
+    local in_error = false
+   awesome.add_signal("debug::error", function (err)
+        -- Make sure we don't go into an endless error loop
+					 if in_error then return end
+        in_error = true
+
+        naughty.notify({ preset = naughty.config.presets.critical,
+                         title = "Oops, an error happened!",
+                         text = err })
+        in_error = false
+     end)
+end
+-- }}}
+
+-- {{{ Utils
+
+function string:split(sep)
+   local sep, fields = sep or " ", {}
+   local pattern = string.format("([^%s]+)", sep)
+   self:gsub(pattern, function(c) fields[#fields+1] = c end)
+   return fields
+end
+
+-- }}}
 
 -- {{{ Variable definitions
 -- Modify this line before restart awesome
@@ -159,34 +195,52 @@ mytasklist.buttons = awful.util.table.join(
                            if client.focus then client.focus:raise() end
                         end))
 
+-- {{{ Widgets
 -- CPU widget
 cputwidget = widget({ type = "textbox" })
 vicious.register(cputwidget, vicious.widgets.cpu,
 		 function (widget, args)
 		    if  args[1] == 50 then
-		       return "| " .. colyel .. "cpu " .. coldef .. colbyel .. args[1] .. "% " .. coldef .. ""
+		       return "| " .. colyel .. "cpu " .. coldef .. colbyel .. string.format("% 3d%%", args[1]) .. coldef .. ""
 		    elseif args[1] >= 50 then
-		       return "| " .. colred .. "cpu " .. coldef .. colbred .. args[1] .. "% " .. coldef .. ""
+		       return "| " .. colred .. "cpu " .. coldef .. colbred .. string.format("% 3d%%", args[1]) .. coldef .. ""
 		    else
-		       return "| " .. colblk .. "cpu " .. coldef .. colbblk .. args[1] .. "% " .. coldef .. ""
+		       return "| " .. colblu .. "cpu " .. coldef .. colbblu .. string.format("% 3d%%", args[1]) .. coldef .. ""
 		    end
-		 end )
+		 end)
 cputwidget:buttons(awful.util.table.join(awful.button({}, 1, function () awful.util.spawn ( terminal .. " -e htop") end ) ) )
 
 -- Ram widget
 memwidget = widget({ type = "textbox" })
 vicious.cache(vicious.widgets.mem)
-vicious.register(memwidget, vicious.widgets.mem, "" .. colblk .. "ram " .. coldef .. colbblk .. "$1% ($2 MiB) " .. coldef .. "", 59)
+vicious.register(memwidget, vicious.widgets.mem, "" .. colyel .. "ram " .. coldef .. colbyel .. "$1%" .. coldef .. " (" .. colbyel .. "$2 MiB" .. coldef .. ") " .. "", 59)
 
 -- Sound widget
 volwidget = widget({ type = "textbox" })
-vicious.register(volwidget, vicious.widgets.volume, "" .. colblk .. "vol " .. coldef .. colbgre .. "$1% " .. coldef .. "", 1, "Master")
-volwidget:buttons(awful.util.table.join(awful.button({}, 4, function () awful.util.spawn ( "amixer -c 0 set Master 2dB+" ) end ),
-					awful.button({}, 5, function () awful.util.spawn ( "amixer -c 0 set Master 2dB-" ) end ) ) )
+vicious.register(volwidget, vicious.widgets.volume, "" .. colgre .. "vol " .. coldef .. colbgre .. "$1% " .. coldef .. "", 1, "Master")
+volwidget:buttons(awful.util.table.join(
+		     awful.button({}, 1, function ()
+					    awful.util.spawn( "amixer -q sset Master toggle" )
+					    vicious.force({volwidget})
+					 end),
+		     awful.button({}, 4, function ()
+					    awful.util.spawn( "amixer -q sset Master 2dB+" )
+					    vicious.force({volwidget})
+					 end),
+		     awful.button({}, 5, function ()
+					    awful.util.spawn( "amixer -q sset Master 2dB-" )
+					    vicious.force({volwidget})
+					 end)))
 
 -- Gmail widget
 mailwidget = widget({ type = "textbox" })
-vicious.register(mailwidget, vicious.widgets.gmail, "" .. colblk .. "gmail " .. coldef .. colbgre .. "${count} messages" .. coldef .. " | ", 20)
+function readMail()
+   local fddisk = io.popen("/home/" .. USER .. "/scripts/imap.py")
+   local status = fddisk:read()
+   fddisk:close()
+   return status:split(" ")
+end
+vicious.register(mailwidget, readMail, "" .. colgre .. "mail(s) " .. coldef .. "Aufrinfo " .. colbgre .. "[$1]" .. coldef .. " Gmail" .. colbgre .. " [$2]" .. coldef .. " | ", 20)
 
 -- Calendar widget
 calwidget = widget({ type = "textbox" })
@@ -202,27 +256,7 @@ function dayth()
       return "<span font='proggytiny 7'><sup>th</sup></span>"
    end
 end
-vicious.register(calwidget, vicious.widgets.date, " | " .. colyel .. " %a, %d" .. dayth() .. " %B, %H:%M " .. coldef .. "")
--- Affiche un calendrier
--- calendar2.addCalendarToWidget(calwidget, "" .. colyel .. "%s" .. coldef .. "")
-
--- MPD widget
-mpdwidget = widget({ type = "textbox" })
-vicious.register(mpdwidget, vicious.widgets.mpd,
-                 function (widget, args)
-                    if   args["{state}"] == "Stop"
-		    then
-		       return "" .. colblk .. "mpd " .. coldef .. colbred .. "Stop" .. coldef .. " | "
-		    elseif args["{state}"] == "Pause"
-		    then
-		       return "" .. colblk .. "mpd " .. coldef .. colbyel .. "Paused" .. coldef .. " | "
-                    else
-		       return "" .. colblk .. "mpd " .. coldef .. colbblu .. args["{Artist}"] .. coldef .. " - " .. colbgre .. args["{Title}"] .. coldef .. " | "
-                    end
-                 end)
-mpdwidget:buttons(awful.util.table.join(awful.button({}, 1, function () awful.util.spawn ( "mpc toggle" ) end ),
-					awful.button({}, 2, function () awful.util.spawn ( "mpc stop" ) end ),
-					awful.button({}, 3, function () awful.util.spawn ( "mpc next" ) end ) ) )
+vicious.register(calwidget, vicious.widgets.date, " | " .. colbyel .. " %a, %d" .. dayth() .. " %B, %H:%M " .. coldef .. "")
 
 -- Create a promptbox for screen 1
 mypromptbox[1] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
@@ -262,7 +296,6 @@ mywibox2[1].widgets = {
    cputwidget,
    memwidget,
    mailwidget,
-   --mpdwidget,
    layout = awful.widget.layout.horizontal.rightleft,
   {
       mylauncher,
@@ -405,6 +438,10 @@ awful.rules.rules = {
       properties = {floating = true} },
     { rule = { class = "Chromium" },
       properties = {floating = true, tag = tags[1][5]} },
+    { rule = { name = "urxvt_session" },
+      properties = { tag = tags[1][4], switchtotag = true } },
+    { rule = { name = "urxvt_weechat-curses" },
+      properties = { tag = tags[1][7] } },
     { rule = { name = "Firefox" },
       properties = {tag = tags[1][5]} },
 }
@@ -413,29 +450,28 @@ awful.rules.rules = {
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.add_signal("manage", function (c, startup)
-    -- Add a titlebar
-    -- awful.titlebar.add(c, { modkey = modkey })
+			       -- Add a titlebar
+			       -- awful.titlebar.add(c, { modkey = modkey })
+			       -- Enable sloppy focus
+			       c:add_signal("mouse::enter", function(c)
+							       if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+							       and awful.client.focus.filter(c) then
+							       client.focus = c
+							    end
+							 end)
 
-    -- Enable sloppy focus
-    c:add_signal("mouse::enter", function(c)
-        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-            and awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
+			       if not startup then
+				  -- Set the windows at the slave,
+				  -- i.e. put it at the end of others instead of setting it master.
+				  -- awful.client.setslave(c)
 
-    if not startup then
-        -- Set the windows at the slave,
-        -- i.e. put it at the end of others instead of setting it master.
-        -- awful.client.setslave(c)
-
-        -- Put windows in a smart way, only if they does not set an initial position.
-        if not c.size_hints.user_position and not c.size_hints.program_position then
-            awful.placement.no_overlap(c)
-            awful.placement.no_offscreen(c)
-        end
-    end
-end)
+				  -- Put windows in a smart way, only if they does not set an initial position.
+				  if not c.size_hints.user_position and not c.size_hints.program_position then
+				     awful.placement.no_overlap(c)
+				     awful.placement.no_offscreen(c)
+				  end
+			       end
+			    end)
 
 client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
