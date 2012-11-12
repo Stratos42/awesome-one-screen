@@ -3,16 +3,24 @@
 import imaplib
 
 #first field is imap server, second - port (993 for gmail SSL IMAP)
-M=imaplib.IMAP4_SSL("imap.gmail.com", 993)
+M1=imaplib.IMAP4_SSL("imap.gmail.com", 993)
 #first field is imap login (gmail uses login with domain and '@' character), second - password
-M.login("user@gmail.com","password")
+M1.login("user@gmail.com","password")
 
-status, counts = M.status("Inbox","(MESSAGES UNSEEN)")
+#other imap server
+# M2=imaplib.IMAP4_SSL("example.com", 993)
+# M2.login("user@example.com","password")
 
-unread = int(counts[0].split()[4][:-1])
-if unread == 0:
-    print "0"
-else:
-    print str(unread)
+statusM1, countsM1 = M1.status("Inbox","(MESSAGES UNSEEN)")
+# statusM2, countsM2 = M2.status("Inbox","(MESSAGES UNSEEN)")
 
-M.logout()
+# print "Status M1 = " + statusM1
+# print "Status M2 = " + statusM2
+
+unreadM1 = int(countsM1[0].split()[4][:-1])
+# unreadM2 = int(countsM2[0].split()[4][:-1])
+
+print str(unreadM1) # + str(unreadM2)
+
+M1.logout()
+# M2.logout()

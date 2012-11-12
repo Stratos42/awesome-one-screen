@@ -24,6 +24,8 @@ Une fois cree, vous avez le choix entre :
 
       # cd ~/.config &&
         git clone http://[<login>@]git.aufrinfo.net/git/awesome-one-screen.git awesome
+	ou
+	git clone https://github.com/Stratos42/awesome-one-screen.git awesome
 
       en replacant login par votre identifiant si necessaire.
       (Anonyme autorise pour le clone)
@@ -66,6 +68,14 @@ en y ajoutant la ligne :
      machine mail.google.com login <login gmail sans @gmail.com> password <pass gmail>
 
 D'autres widgets sont disponibles dans le repertoire ~/.config/awesome/vicious/
+
+### Mail widget
+
+Le widget mail fonctionne avec le script imap.py qui se trouve dans le repertoire clone
+- Copiez le script dans le repertoire ~/scripts/ (creez le si besoin)
+- Ouvrez le script avec votre editeur et indiquez vos identifiants de connexion.
+- Si vous possedez plusieurs compte IMAP (Gmail + Mail personnel) decommentez les lignes
+- Dans rc.lua, a la ligne 243, modifiez le format selon le nombre de compte imap que vous possedez
 
 - - -
 
